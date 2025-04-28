@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCards</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <script src="lib/sql-wasm.js"></script>
+    <script src="lib/JsBarcode.all.min.js"></script>
+    <script src="lib/qrcode.min.js"></script>
+</head>
+<body>
+    <h1>Organise Cards</h1>
+
+    <form id="cardForm">
+        <input type="hidden" id="cardId">
+        <input type="text" id="cardName" placeholder="Card name" required>
+        <input type="text" id="barcodeData" placeholder="Barcode Number" required>
+        <button type="submit">Save Card</button>
+    </form>
+
+    <div id="cardList"></div>
+
+    <div class="buttons">
+        <button onclick="backupToCloud()">☁️ Backup</button>
+        <button onclick="document.getElementById('importFile').click()">🔄 Import Backup</button>
+        <button onclick="exportDb()">📥 Download Backup</button>
+        <input type="file" id="importFile" style="display:none" onchange="importBackup(event)">
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('service-worker.js');
+      }
+    </script>
+</body>
+</html>
