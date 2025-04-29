@@ -56,6 +56,43 @@ function deleteCard(id) {
     }
 }
 
+function loadPresetsFromJSON() {
+  fetch('preset-cards.json')
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('presetSelect');
+      data.forEach(card => {
+        const option = document.createElement('option');
+        option.value = card.name;
+        option.textContent = card.name;
+        option.dataset.website = card.website;
+        select.appendChild(option);
+      });
+
+      select.addEventListener('change', function () {
+        const selectedOption = select.options[select.selectedIndex];
+        const name = selectedOption.value;
+        const website = selectedOption.dataset.website;
+        if (name) {
+          document.getElementById('cardName').value = name;
+          document.getElementById('barcodeData').value = website;
+          showCardLogo(website);
+        }
+      });
+    })
+    .catch(error => {
+      console.error("Cannot load the default card info:", error);
+    });
+}
+
+function showCardLogo(url) {
+  const previewDiv = document.getElementById('logoPreview');
+  const domain = new URL(url).hostname;
+  const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+  previewDiv.innerHTML = `<img src="${iconUrl}" alt="Logo" style="width:64px;height:64px;border-radius:8px;">`;
+}
+
+
 document.getElementById('cardForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const id = document.getElementById('cardId').value;
@@ -136,4 +173,7 @@ function checkBackupReminder() {
 }
 
 // Start
-initDb();
+window.addEventListener('DOMContentLoaded', () => {
+  initDb();
+  loadPresetsFromJSON();
+});
